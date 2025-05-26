@@ -19,9 +19,46 @@ public partial class MainWindow : Window
 {
     private readonly ApiService _apiService = new ApiService();
 
-    private async void LoadOrders_Click(object sender, RoutedEventArgs e)
+    public MainWindow()
     {
-        var orders = await _apiService.GetOrdersAsync();
-        OrdersGrid.ItemsSource = orders;
+        InitializeComponent();
+        Loaded += async (s, e) => await RefreshOrders();
+    }
+
+    private async Task RefreshOrders()
+    {
+        try
+        {
+            var orders = await _apiService.GetOrdersAsync();
+            OrdersGrid.ItemsSource = orders;
+            StatusText.Text = $"Загружено заказов: {orders.Count}";
+        }
+        catch (Exception ex)
+        {
+            StatusText.Text = $"Ошибка: {ex.Message}";
+        }
+    }
+
+    private async void NewOrder_Click(object sender, RoutedEventArgs e)
+    {
+        var window = new NewOrderWindow();
+        if (window.ShowDialog() == true)
+        {
+            await RefreshOrders();
+        }
+    }
+
+    private async void NewClient_Click(object sender, RoutedEventArgs e)
+    {
+        var window = new NewClientWindow();
+        if (window.ShowDialog() == true)
+        {
+            await RefreshOrders();
+        }
+    }
+
+    private async void Refresh_Click(object sender, RoutedEventArgs e)
+    {
+        await RefreshOrders();
     }
 }

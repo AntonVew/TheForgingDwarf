@@ -18,7 +18,28 @@ namespace ForgingDwarf.Client.Services
 
         public async Task<List<Order>> GetOrdersAsync()
         {
-            return await _httpClient.GetFromJsonAsync<List<Order>>("api/orders");
+            var response = await _httpClient.GetAsync("api/orders");
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsAsync<List<Order>>();
+        }
+
+        public async Task<List<Common.Models.Client>> GetClientsAsync()
+        {
+            var response = await _httpClient.GetAsync("api/clients");
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsAsync<List<Common.Models.Client>>();
+        }
+
+        public async Task CreateOrderAsync(Order order)
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/orders", order);
+            response.EnsureSuccessStatusCode();
+        }
+
+        public async Task CreateClientAsync(Common.Models.Client client)
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/clients", client);
+            response.EnsureSuccessStatusCode();
         }
     }
 }
