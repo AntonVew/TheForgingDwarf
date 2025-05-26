@@ -1,0 +1,20 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Common.Models
+{
+    class Order
+    {
+        public int Id { get; set; }
+        public string ClientName { get; set; }
+        public string ItemType { get; set; } // Меч, ворота и т.д.
+        public string SteelType { get; set; } // Дамасская, тигельная...
+        public string Style { get; set; } // Готика, фэнтези...
+        public DateTime OrderDate { get; set; }
+        public bool IsCustom { get; set; }
+        public string Status { get; set; }
+    }
+}
