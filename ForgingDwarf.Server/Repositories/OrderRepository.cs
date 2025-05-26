@@ -11,9 +11,11 @@ namespace ForgingDwarf.Server.Repositories
     public class OrderRepository
     {
         private readonly AppDbContext _db;
-        public OrderRepository()
+
+        // Изменён конструктор
+        public OrderRepository(AppDbContext dbContext)
         {
-            _db = new AppDbContext();
+            _db = dbContext;
         }
 
         public void AddOrder(Order order)

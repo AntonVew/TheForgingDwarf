@@ -9,11 +9,21 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ForgingDwarf.Server.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class OrdersController : ControllerBase
     {
-        private readonly OrderRepository _repo = new OrderRepository();
+        private readonly OrderRepository _repository;
+
+        public OrdersController(OrderRepository repository)
+        {
+            _repository = repository;
+        }
 
         [HttpGet]
-        public List<Order> GetAllOrders() => _repo.GetAllOrders();
+        public IActionResult GetAll()
+        {
+            return Ok(_repository.GetAllOrders());
+        }
     }
 }
