@@ -1,14 +1,67 @@
-﻿namespace ForgingDwarf.Common.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ForgingDwarf.Common.Models
 {
     public class Order
     {
         public int Id { get; set; }
-        public string ClientId { get; set; }
-        public string ItemType { get; set; } // Меч, ворота и т.д.
-        public string SteelType { get; set; } // Дамасская, тигельная...
-        public string Style { get; set; } // Готика, фэнтези...
+
+        [Required(ErrorMessage = "Клиент не указан")]
+        public int ClientId { get; set; }
+
+        [Required(ErrorMessage = "Тип изделия обязателен")]
+        public ItemType ItemType { get; set; }
+
+        [Required(ErrorMessage = "Тип стали обязателен")]
+        public SteelType SteelType { get; set; }
+
+        [Required(ErrorMessage = "Стиль обязателен")]
+        public Style Style { get; set; }
+
+        [Required(ErrorMessage = "Дата заказа обязательна")]
         public DateTime OrderDate { get; set; }
+
+        [Required(ErrorMessage = "Укажите, является ли заказ индивидуальным")]
         public bool IsCustom { get; set; }
-        public string Status { get; set; } // "В очереди", "В работе", "Готово"
+
+        [Required(ErrorMessage = "Статус заказа обязателен")]
+        public OrderStatus Status { get; set; }
+
+        [Range(0.01, double.MaxValue, ErrorMessage = "Цена должна быть больше 0")]
+        public double Price { get; set; }
+
+        public Client? Client { get; set; }
     }
+
+    //Енамы для полей класса
+
+        public enum OrderStatus
+        {
+            InQueue,
+            InProgress,
+            Completed
+        }
+
+        public enum ItemType
+        {
+            Weapon,
+            Gate,
+            Sculpture,
+            ArmorMedieval,
+            ArmorRenaissance
+        }
+
+        public enum SteelType
+        {
+            Damascus,
+            Mosaic,
+            Crucible
+        }
+
+        public enum Style
+        {
+            Gothic,
+            Fantasy,
+            Historical
+        }
 }
