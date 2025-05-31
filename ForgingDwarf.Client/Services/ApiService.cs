@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
-using System.Threading.Tasks;
-using ForgingDwarf.Common.Models;
+using System.Text.Json;
 
 namespace ForgingDwarf.Client.Services
 {
@@ -16,8 +12,28 @@ namespace ForgingDwarf.Client.Services
         // Аутентификация
         public async Task<bool> RegisterAsync(Common.Models.Client client)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/auth/register", client);
-            return response.IsSuccessStatusCode;
+            try
+            {
+                var content = new StringContent(
+                    JsonSerializer.Serialize(client),
+                    Encoding.UTF8,
+                    "application/json");
+
+                var response = await _httpClient.PostAsync("api/auth/register", content);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var error = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Ошибка сервера: {error}"); // Лог ошибки
+                }
+
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка: {ex.Message}");
+                return false;
+            }
         }
 
         public async Task<bool> LoginAsync(string name, string password)
@@ -25,6 +41,8 @@ namespace ForgingDwarf.Client.Services
             var response = await _httpClient.PostAsJsonAsync("api/auth/login", new { Name = name, Password = password });
             return response.IsSuccessStatusCode;
         }
+
+
 
         // Остальные методы (CRUD)...
     }

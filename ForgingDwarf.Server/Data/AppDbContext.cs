@@ -14,28 +14,55 @@ namespace ForgingDwarf.Server.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.Client)          // У заказа один клиент
-                .WithMany(c => c.Orders)        // У клиента много заказов
-                .HasForeignKey(o => o.ClientId) // Внешний ключ
-                .OnDelete(DeleteBehavior.Cascade);
+            // Конфигурация для Client
+            modelBuilder.Entity<Client>(entity =>
+            {
+                entity.HasKey(c => c.Id);
+                entity.Property(c => c.Id)
+                      .ValueGeneratedOnAdd(); // Автоинкремент
 
-            // Конвертируем enum в строки для БД
-            modelBuilder.Entity<Order>()
-                .Property(o => o.Status)
-                .HasConversion<string>();
+                entity.Property(c => c.Name)
+                      .IsRequired()
+                      .HasMaxLength(100);
 
-            modelBuilder.Entity<Order>()
-                .Property(o => o.ItemType)
-                .HasConversion<string>();
+                entity.Property(c => c.Password)
+                      .IsRequired()
+                      .HasMaxLength(255);
 
-            modelBuilder.Entity<Order>()
-                .Property(o => o.SteelType)
-                .HasConversion<string>();
+                entity.Property(c => c.IsSuperuser)
+                      .HasDefaultValue(false);
+            });
 
-            modelBuilder.Entity<Order>()
-                .Property(o => o.Style)
-                .HasConversion<string>();
+            // Конфигурация для Order
+            modelBuilder.Entity<Order>(entity =>
+            {
+                entity.HasKey(o => o.Id);
+                entity.Property(o => o.Id)
+                      .ValueGeneratedOnAdd(); // Явно указываем автоинкремент
+
+                // Связь с Client
+                entity.HasOne(o => o.Client)
+                      .WithMany(c => c.Orders)
+                      .HasForeignKey(o => o.ClientId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                // Конвертация enum
+                entity.Property(o => o.Status)
+                      .HasConversion<string>();
+
+                entity.Property(o => o.ItemType)
+                      .HasConversion<string>();
+
+                entity.Property(o => o.SteelType)
+                      .HasConversion<string>();
+
+                entity.Property(o => o.Style)
+                      .HasConversion<string>();
+
+                // Настройка других свойств
+                entity.Property(o => o.Price)
+                      .HasColumnType("decimal(18,2)"); // Для точного хранения денежных значений
+            });
         }
     }
 }

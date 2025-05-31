@@ -30,11 +30,11 @@ namespace ForgingDwarf.Client
             }
         }
 
-        private async void RegisterButton_Click(object sender, RoutedEventArgs e)
+        private void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
-            var client = new Common.Models.Client { Name = NameBox.Text, Password = PasswordBox.Password };
-            if (await _apiService.RegisterAsync(client))
-                MessageBox.Show("Регистрация успешна");
+            var regWindow = new RegistrationWindow();
+            regWindow.Owner = this; // Связываем окна
+            regWindow.ShowDialog(); // Модальное окно
         }
     }
 }

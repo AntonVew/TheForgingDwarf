@@ -17,12 +17,17 @@ public class AuthController : ControllerBase
 
     // Регистрация
     [HttpPost("register")]
-    public async Task<IActionResult> Register(Client client)
+    public async Task<IActionResult> Register([FromBody] Client client)
     {
+        // Проверка уникальности имени
         if (_db.Clients.Any(c => c.Name == client.Name))
-            return BadRequest("Пользователь уже существует");
+            return BadRequest("Имя пользователя уже занято");
 
+        // Хеширование пароля
         client.Password = PasswordHasher.Hash(client.Password);
+
+        client.IsSuperuser = false;
+
         _db.Clients.Add(client);
         await _db.SaveChangesAsync();
 

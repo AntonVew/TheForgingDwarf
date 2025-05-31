@@ -15,10 +15,8 @@ namespace ForgingDwarf.Common.Models
         [StringLength(100, MinimumLength = 6, ErrorMessage = "Пароль от 6 символов")]
         public string? Password { get; set; }
 
-        [Phone(ErrorMessage = "Некорректный формат телефона")]
-        [Required(ErrorMessage = "Телефон обязателен")]
         public string? Phone { get; set; }
-
+        public bool IsSuperuser { get; set; } = false;
         public string? Email { get; set; }
 
         public List<Order> Orders { get; set; } = [];
