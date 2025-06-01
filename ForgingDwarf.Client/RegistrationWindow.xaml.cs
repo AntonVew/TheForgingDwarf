@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using ForgingDwarf.Client.Services;
+using static AuthController;
 
 namespace ForgingDwarf.Client
 {
@@ -16,31 +17,28 @@ namespace ForgingDwarf.Client
         }
         private async void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
-            // Валидация паролей
-            if (PasswordBox.Password != ConfirmPasswordBox.Password)
+            var request = new ClientRegistrationDto
             {
-                MessageBox.Show("Пароли не совпадают!");
-                return;
-            }
-
-            var client = new Common.Models.Client
-            {
-                Name = NameBox.Text,
-                Password = PasswordBox.Password, // Сервер хеширует пароль
-                Email = string.IsNullOrWhiteSpace(EmailBox.Text) ? null : EmailBox.Text,
-                Phone = string.IsNullOrWhiteSpace(PhoneBox.Text) ? null : PhoneBox.Text
+                Name = NameBox.Text.Trim(),
+                Password = PasswordBox.Password,
+                Email = EmailBox.Text.Trim(),
+                Phone = PhoneBox.Text.Trim()
             };
 
-            // Отправка на сервер
-            var success = await _apiService.RegisterAsync(client);
-            if (success)
+            var result = await _apiService.RegisterAsync(request);
+
+            if (result.IsSuccess)
             {
                 MessageBox.Show("Регистрация успешна!");
-                this.Close();
+                Close();
             }
             else
             {
-                MessageBox.Show("Ошибка регистрации. Возможно, имя уже занято.");
+                MessageBox.Show(result.ErrorMessage, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                // Автофокус на проблемное поле
+                if (result.ErrorMessage.Contains("имя")) NameBox.Focus();
+                else if (result.ErrorMessage.Contains("пароль")) PasswordBox.Focus();
             }
         }
 

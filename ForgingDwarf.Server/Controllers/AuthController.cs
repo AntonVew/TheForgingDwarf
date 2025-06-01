@@ -3,6 +3,7 @@ using ForgingDwarf.Common.Models;
 using ForgingDwarf.Server.Data;
 using ForgingDwarf.Common.Utils;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 [ApiController]
 [Route("api/auth")]
@@ -17,37 +18,54 @@ public class AuthController : ControllerBase
 
     // Регистрация
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] Client client)
+    public async Task<IActionResult> Register([FromBody] ClientRegistrationDto request)
     {
-        // Проверка уникальности имени
-        if (_db.Clients.Any(c => c.Name == client.Name))
-            return BadRequest("Имя пользователя уже занято");
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
 
-        // Хеширование пароля
-        client.Password = PasswordHasher.Hash(client.Password);
+        var existingClient = await _db.Clients
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => EF.Functions.Collate(c.Name, "SQL_Latin1_General_CP1_CS_AS") == request.Name);
 
-        client.IsSuperuser = false;
+        if (existingClient != null)
+            return Conflict("Имя пользователя уже занято");
 
-        _db.Clients.Add(client);
-        await _db.SaveChangesAsync();
+        var client = new Client
+        {
+            Name = request.Name,
+            Password = PasswordHasher.Hash(request.Password),
+            Email = request.Email,
+            Phone = request.Phone,
+            IsSuperuser = false
+        };
 
-        return Ok(new { client.Id, client.Name });
+        try
+        {
+            _db.Clients.Add(client);
+            await _db.SaveChangesAsync();
+
+            return Ok(new { client.Id, client.Name });
+        }
+        catch (DbUpdateException ex)
+        {
+            return StatusCode(500, "Ошибка сервера при сохранении");
+        }
     }
 
-    // Вход
-    [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginRequest request)
+    public class ClientRegistrationDto
     {
-        var client = await _db.Clients.FirstOrDefaultAsync(c => c.Name == request.Name);
-        if (client == null || !PasswordHasher.Verify(request.Password, client.Password))
-            return Unauthorized("Неверное имя или пароль");
+        [Required(ErrorMessage = "Имя обязательно")]
+        [StringLength(50, MinimumLength = 3)]
+        public string Name { get; set; }
 
-        return Ok(new { client.Id, client.Name });
+        [Required(ErrorMessage = "Пароль обязателен")]
+        [StringLength(100, MinimumLength = 6)]
+        public string Password { get; set; }
+
+        [EmailAddress]
+        public string? Email { get; set; }
+
+        [Phone]
+        public string? Phone { get; set; }
     }
-}
-
-public class LoginRequest
-{
-    public string Name { get; set; }
-    public string Password { get; set; }
 }

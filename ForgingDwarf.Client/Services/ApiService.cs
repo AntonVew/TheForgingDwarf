@@ -1,7 +1,7 @@
-﻿using System.Net.Http;
+﻿using System.Net;
+using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json;
+using static AuthController;
 
 namespace ForgingDwarf.Client.Services
 {
@@ -10,30 +10,42 @@ namespace ForgingDwarf.Client.Services
         private readonly HttpClient _httpClient = new() { BaseAddress = new Uri("http://localhost:5000") };
 
         // Аутентификация
-        public async Task<bool> RegisterAsync(Common.Models.Client client)
+        public async Task<RegistrationResult> RegisterAsync(ClientRegistrationDto request)
         {
             try
             {
-                var content = new StringContent(
-                    JsonSerializer.Serialize(client),
-                    Encoding.UTF8,
-                    "application/json");
+                var response = await _httpClient.PostAsJsonAsync("api/auth/register", request);
 
-                var response = await _httpClient.PostAsync("api/auth/register", content);
+                if (response.IsSuccessStatusCode)
+                    return RegistrationResult.Success();
 
-                if (!response.IsSuccessStatusCode)
+                var errorContent = await response.Content.ReadAsStringAsync();
+                return response.StatusCode switch
                 {
-                    var error = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine($"Ошибка сервера: {error}"); // Лог ошибки
-                }
-
-                return response.IsSuccessStatusCode;
+                    HttpStatusCode.Conflict => RegistrationResult.Failure("Имя пользователя занято"),
+                    HttpStatusCode.BadRequest => RegistrationResult.Failure("Некорректные данные"),
+                    _ => RegistrationResult.Failure($"Ошибка: {errorContent}")
+                };
             }
-            catch (Exception ex)
+            catch (HttpRequestException ex)
             {
-                Console.WriteLine($"Ошибка: {ex.Message}");
-                return false;
+                return RegistrationResult.Failure($"Сетевая ошибка: {ex.Message}");
             }
+        }
+
+        public class RegistrationResult
+        {
+            public bool IsSuccess { get; }
+            public string ErrorMessage { get; }
+
+            private RegistrationResult(bool isSuccess, string errorMessage)
+            {
+                IsSuccess = isSuccess;
+                ErrorMessage = errorMessage;
+            }
+
+            public static RegistrationResult Success() => new(true, null);
+            public static RegistrationResult Failure(string error) => new(false, error);
         }
 
         public async Task<bool> LoginAsync(string name, string password)

@@ -1,5 +1,4 @@
-﻿using ForgingDwarf.Common.Models;
-using ForgingDwarf.Server.Repositories;
+﻿using ForgingDwarf.Server.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ForgingDwarf.Server.Controllers

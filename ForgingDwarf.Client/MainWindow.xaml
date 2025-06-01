@@ -6,8 +6,26 @@
         xmlns:local="clr-namespace:ForgingDwarf.Client"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <DataGrid x:Name="OrdersGrid" AutoGenerateColumns="True" />
-        <Button Content="Загрузить заказы" Click="LoadOrders_Click" />
-    </Grid>
+    <DockPanel>
+        <!-- Панель управления -->
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="5">
+            <Button Content="Создать заказ" Padding="10" Click="CreateOrder_Click"/>
+            <Button Content="Обновить список" Padding="10" Click="RefreshOrders_Click"/>
+        </StackPanel>
+
+        <!-- Список заказов -->
+        <DataGrid x:Name="OrdersGrid" AutoGenerateColumns="False" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto"/>
+                <DataGridTextColumn Header="Клиент" Binding="{Binding Client.Name}" Width="*"/>
+                <DataGridTextColumn Header="Тип изделия" Binding="{Binding ItemType}" Width="*"/>
+                <DataGridTextColumn Header="Тип стали" Binding="{Binding SteelType}" Width="*"/>
+                <DataGridTextColumn Header="Стиль" Binding="{Binding Style}" Width="*"/>
+                <DataGridCheckBoxColumn Header="Индивидуальный" Binding="{Binding IsCustom}" Width="Auto"/>
+                <DataGridTextColumn Header="Цена" Binding="{Binding Price, StringFormat={}{0:C}}" Width="Auto"/>
+                <DataGridTextColumn Header="Статус" Binding="{Binding Status}" Width="*"/>
+                <DataGridTextColumn Header="Дата заказа" Binding="{Binding OrderDate, StringFormat={}{0:dd.MM.yyyy}}" Width="Auto"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
 </Window>
