@@ -36,7 +36,6 @@ namespace ForgingDwarf.Client
             {
                 MessageBox.Show(result.ErrorMessage, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
 
-                // Автофокус на проблемное поле
                 if (result.ErrorMessage.Contains("имя")) NameBox.Focus();
                 else if (result.ErrorMessage.Contains("пароль")) PasswordBox.Focus();
             }

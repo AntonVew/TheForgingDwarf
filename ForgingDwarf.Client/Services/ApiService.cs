@@ -55,15 +55,14 @@ namespace ForgingDwarf.Client.Services
             return response.IsSuccessStatusCode;
         }
 
+        //для главного окна
         public async Task<List<OrderWithClient>> GetOrdersWithClientsAsync()
         {
             try
             {
-                // Получаем данные отдельно
                 var orders = await _httpClient.GetFromJsonAsync<List<Order>>("api/orders");
                 var clients = await _httpClient.GetFromJsonAsync<List<Common.Models.Client>>("api/clients");
 
-                // Локальное объединение
                 return orders.Join(
                     clients,
                     order => order.ClientId,
@@ -103,6 +102,7 @@ namespace ForgingDwarf.Client.Services
             public double Price { get; set; }
         }
 
+        //Получаем клиентов
         public async Task<List<Common.Models.Client>> GetClientsAsync()
         {
             return await _httpClient.GetFromJsonAsync<List<Common.Models.Client>>("api/clients");
@@ -129,6 +129,37 @@ namespace ForgingDwarf.Client.Services
             }
         }
 
-        // Остальные методы (CRUD)...
+        //удаление заказа
+        public async Task<bool> DeleteOrderAsync(int orderId)
+        {
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"api/orders/{orderId}");
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка удаления: {ex.Message}");
+                return false;
+            }
+        }
+
+        //обновление статуса заказа
+        public async Task<bool> UpdateOrderStatusAsync(int orderId, OrderStatus newStatus)
+        {
+            try
+            {
+                var response = await _httpClient.PutAsJsonAsync(
+                    $"api/orders/{orderId}/status",
+                    new { Status = newStatus });
+
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка обновления статуса: {ex.Message}");
+                return false;
+            }
+        }
     }
 }

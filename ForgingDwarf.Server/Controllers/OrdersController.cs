@@ -87,6 +87,55 @@ namespace ForgingDwarf.Server.Controllers
                 return StatusCode(500, "Внутренняя ошибка сервера");
             }
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                var order = await _db.Orders.FindAsync(id);
+                if (order == null)
+                    return NotFound();
+
+                _db.Orders.Remove(order);
+                await _db.SaveChangesAsync();
+
+                Console.WriteLine($"Заказ {id} удален");
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка удаления: {ex.Message}");
+                return StatusCode(500, "Ошибка при удалении заказа");
+            }
+        }
+
+        [HttpPut("{id}/status")]
+        public async Task<IActionResult> UpdateStatus(int id, [FromBody] StatusUpdateDto dto)
+        {
+            try
+            {
+                var order = await _db.Orders.FindAsync(id);
+                if (order == null)
+                    return NotFound();
+
+                order.Status = dto.Status;
+                await _db.SaveChangesAsync();
+
+                Console.WriteLine($"Статус заказа {id} изменен на {dto.Status}");
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка обновления статуса: {ex.Message}");
+                return StatusCode(500, "Ошибка при обновлении статуса");
+            }
+        }
+
+        public class StatusUpdateDto
+        {
+            public OrderStatus Status { get; set; }
+        }
     }
 
 }

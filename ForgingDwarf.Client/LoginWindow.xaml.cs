@@ -1,8 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using Azure.Core;
 using ForgingDwarf.Client.Services;
-using ForgingDwarf.Common.Models;
 using ForgingDwarf.Common.Utils;
 
 namespace ForgingDwarf.Client
@@ -23,7 +21,7 @@ namespace ForgingDwarf.Client
         {
             if (await _apiService.LoginAsync(NameBox.Text, PasswordHasher.Hash(PasswordBox.Password)))
             {
-                new MainWindow().Show(); // Основное окно приложения
+                new MainWindow().Show();
                 this.Close();
             }
             else
@@ -35,8 +33,8 @@ namespace ForgingDwarf.Client
         private void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
             var regWindow = new RegistrationWindow();
-            regWindow.Owner = this; // Связываем окна
-            regWindow.ShowDialog(); // Модальное окно
+            regWindow.Owner = this;
+            regWindow.ShowDialog();
         }
     }
 }

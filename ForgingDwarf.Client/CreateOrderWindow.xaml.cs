@@ -1,9 +1,6 @@
 ﻿using ForgingDwarf.Client.Services;
 using ForgingDwarf.Common.Models;
-using System;
-using System.Linq;
 using System.Windows;
-using System.Text.Json;
 
 namespace ForgingDwarf.Client
 {
@@ -23,17 +20,15 @@ namespace ForgingDwarf.Client
 
         private async void CreateOrderWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            // Загрузка клиентов
             var clients = await _apiService.GetClientsAsync();
             ClientCombo.ItemsSource = clients;
 
-            // Заполнение enum'ов
             ItemTypeCombo.ItemsSource = Enum.GetValues(typeof(ItemType));
             SteelTypeCombo.ItemsSource = Enum.GetValues(typeof(SteelType));
             StyleCombo.ItemsSource = Enum.GetValues(typeof(Common.Models.Style));
             StatusCombo.ItemsSource = Enum.GetValues(typeof(OrderStatus));
 
-            // Установка значений по умолчанию
+            // по умолчанию
             ItemTypeCombo.SelectedIndex = 0;
             SteelTypeCombo.SelectedIndex = 0;
             StyleCombo.SelectedIndex = 0;

@@ -7,13 +7,17 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <DockPanel>
-        <!-- Панель управления -->
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="5">
             <Button Content="Создать заказ" Padding="10" Click="CreateOrder_Click"/>
             <Button Content="Обновить список" Padding="10" Click="RefreshOrders_Click"/>
+            <TextBlock Padding="10"  Width="200" TextAlignment="Right">ID заказа</TextBlock>
+            <TextBox x:Name="SelectedID" Padding="10" Width="100"></TextBox>
+            <Button Content="Удалить" Padding="10" Click="DeleteOrder_Click"></Button>
+            <Button Content="Изменить статус" Padding="10" Click="UpdateStatus_Click"></Button>
+            <ComboBox x:Name="ComboStatus"></ComboBox>
+            
         </StackPanel>
 
-        <!-- Список заказов -->
         <DataGrid x:Name="OrdersGrid" AutoGenerateColumns="False" IsReadOnly="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto"/>
