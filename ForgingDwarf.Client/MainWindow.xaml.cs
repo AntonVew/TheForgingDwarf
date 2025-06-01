@@ -18,7 +18,7 @@ public partial class MainWindow : Window
 
     private async Task LoadOrders()
     {
-        var orders = await _apiService.GetOrdersAsync();
+        var orders = await _apiService.GetOrdersWithClientsAsync();
         OrdersGrid.ItemsSource = orders;
     }
 

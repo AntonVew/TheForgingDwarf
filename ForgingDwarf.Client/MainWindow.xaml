@@ -17,7 +17,7 @@
         <DataGrid x:Name="OrdersGrid" AutoGenerateColumns="False" IsReadOnly="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto"/>
-                <DataGridTextColumn Header="Клиент" Binding="{Binding Client.Name}" Width="*"/>
+                <DataGridTextColumn Header="Клиент" Binding="{Binding ClientName}" Width="*"/>
                 <DataGridTextColumn Header="Тип изделия" Binding="{Binding ItemType}" Width="*"/>
                 <DataGridTextColumn Header="Тип стали" Binding="{Binding SteelType}" Width="*"/>
                 <DataGridTextColumn Header="Стиль" Binding="{Binding Style}" Width="*"/>

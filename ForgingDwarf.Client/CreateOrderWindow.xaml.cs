@@ -50,7 +50,6 @@ namespace ForgingDwarf.Client
 
             var order = new Order
             {
-                //Client = (Common.Models.Client)ClientCombo.SelectedItem,
                 ClientId = ((Common.Models.Client)ClientCombo.SelectedItem).Id,
                 ItemType = (ItemType)ItemTypeCombo.SelectedItem,
                 SteelType = (SteelType)SteelTypeCombo.SelectedItem,

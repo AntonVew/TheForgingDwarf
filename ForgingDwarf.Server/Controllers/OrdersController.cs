@@ -45,14 +45,13 @@ namespace ForgingDwarf.Server.Controllers
         {
             try
             {
-                // 1. Проверка валидации модели
+                // валидация
                 if (!ModelState.IsValid)
                 {
                     Console.WriteLine($"Ошибки валидации: {string.Join(", ", ModelState.Values.SelectMany(v => v.Errors))}");
                     return BadRequest(ModelState);
                 }
 
-                // 2. Проверка существования клиента
                 var clientExists = await _db.Clients.AnyAsync(c => c.Id == order.ClientId);
                 if (!clientExists)
                 {
@@ -60,13 +59,11 @@ namespace ForgingDwarf.Server.Controllers
                     return BadRequest("Клиент не найден");
                 }
 
-                // 3. Логирование данных перед сохранением
+                //логирование
                 Console.WriteLine($"Создание заказа: {JsonSerializer.Serialize(order)}");
 
-                // 4. Установка даты
                 order.OrderDate = DateTime.UtcNow;
 
-                // 5. Сохранение с транзакцией
                 await using var transaction = await _db.Database.BeginTransactionAsync();
                 try
                 {

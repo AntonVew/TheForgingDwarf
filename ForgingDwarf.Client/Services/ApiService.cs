@@ -55,9 +55,52 @@ namespace ForgingDwarf.Client.Services
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<List<Order>> GetOrdersAsync()
+        public async Task<List<OrderWithClient>> GetOrdersWithClientsAsync()
         {
-            return await _httpClient.GetFromJsonAsync<List<Order>>("api/orders");
+            try
+            {
+                // Получаем данные отдельно
+                var orders = await _httpClient.GetFromJsonAsync<List<Order>>("api/orders");
+                var clients = await _httpClient.GetFromJsonAsync<List<Common.Models.Client>>("api/clients");
+
+                // Локальное объединение
+                return orders.Join(
+                    clients,
+                    order => order.ClientId,
+                    client => client.Id,
+                    (order, client) => new OrderWithClient
+                    {
+                        Order = order,
+                        ClientName = client.Name,
+                        Id = order.Id,
+                        ItemType = order.ItemType,
+                        SteelType = order.SteelType,
+                        Status = order.Status,
+                        Style = order.Style,
+                        OrderDate = order.OrderDate,
+                        IsCustom = order.IsCustom,
+                        Price = order.Price
+                    }).ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка получения данных: {ex.Message}");
+                return new List<OrderWithClient>();
+            }
+        }
+
+        public class OrderWithClient
+        {
+            public Order Order { get; set; }
+            public string ClientName { get; set; }
+            public int Id { get; set; }
+            public ItemType ItemType { get; set; }
+            public SteelType SteelType { get; set; }
+            public Style Style { get; set; }
+            public DateTime OrderDate { get; set; }
+            public bool IsCustom { get; set; }
+            public OrderStatus Status { get; set; }
+            public double Price { get; set; }
         }
 
         public async Task<List<Common.Models.Client>> GetClientsAsync()
