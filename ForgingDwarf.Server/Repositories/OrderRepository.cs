@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ForgingDwarf.Common.Models;
+﻿using ForgingDwarf.Common.Models;
 using ForgingDwarf.Server.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace ForgingDwarf.Server.Repositories
 {
@@ -12,18 +8,25 @@ namespace ForgingDwarf.Server.Repositories
     {
         private readonly AppDbContext _db;
 
-        // Изменён конструктор
-        public OrderRepository(AppDbContext dbContext)
+        public OrderRepository(AppDbContext db)
         {
-            _db = dbContext;
+            _db = db;
         }
 
-        public void AddOrder(Order order)
+        public async Task<bool> ClientExistsAsync(int clientId)
+        {
+            return await _db.Clients.AnyAsync(c => c.Id == clientId);
+        }
+
+        public async Task AddOrderAsync(Order order)
         {
             _db.Orders.Add(order);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
         }
 
-        public List<Order> GetAllOrders() => _db.Orders.ToList();
+        public List<Order> GetAllOrders()
+        {
+            return _db.Orders.Include(o => o.Client).ToList();
+        }
     }
 }

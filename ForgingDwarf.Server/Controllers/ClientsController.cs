@@ -5,18 +5,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ForgingDwarf.Server.Controllers
 {
-    public class ClientsController
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ClientsController : ControllerBase
     {
         private readonly AppDbContext _db;
 
-        public ClientsController(AppDbContext db) => _db = db;
-
-        [HttpGet("for-dropdown")]
-        public async Task<ActionResult<List<Client>>> GetForDropdown()
+        public ClientsController(AppDbContext db)
         {
-            return await _db.Clients
-                .Select(c => new Client { Id = c.Id, Name = c.Name })
-                .ToListAsync();
+            _db = db;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<List<Client>>> GetAllClients()
+        {
+            return await _db.Clients.ToListAsync();
         }
     }
 }

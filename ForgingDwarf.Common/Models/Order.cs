@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ForgingDwarf.Common.Models
 {
@@ -30,6 +31,7 @@ namespace ForgingDwarf.Common.Models
         [Range(0.01, double.MaxValue, ErrorMessage = "Цена должна быть больше 0")]
         public double Price { get; set; }
 
+        [JsonIgnore]
         public Client? Client { get; set; }
     }
 

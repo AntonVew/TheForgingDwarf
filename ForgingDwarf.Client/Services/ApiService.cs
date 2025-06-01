@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
+using ForgingDwarf.Common.Models;
 using static AuthController;
 
 namespace ForgingDwarf.Client.Services
@@ -54,7 +55,36 @@ namespace ForgingDwarf.Client.Services
             return response.IsSuccessStatusCode;
         }
 
+        public async Task<List<Order>> GetOrdersAsync()
+        {
+            return await _httpClient.GetFromJsonAsync<List<Order>>("api/orders");
+        }
 
+        public async Task<List<Common.Models.Client>> GetClientsAsync()
+        {
+            return await _httpClient.GetFromJsonAsync<List<Common.Models.Client>>("api/clients");
+        }
+
+        public async Task<bool> CreateOrderAsync(Order order)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync("api/orders", order);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Ошибка сервера: {response.StatusCode} - {errorContent}");
+                }
+
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Сетевая ошибка: {ex.Message}");
+                return false;
+            }
+        }
 
         // Остальные методы (CRUD)...
     }

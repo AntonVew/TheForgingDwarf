@@ -26,4 +26,17 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.MapControllers();
+
+app.MapGet("/", () => Results.Json(new
+{
+    Status = "API работает",
+    Endpoints = new
+    {
+        Orders = "/api/orders",
+        Clients = "/api/clients",
+        Auth = "/api/auth"
+    }
+}));
+app.MapGet("/api", () => "API Endpoints:\n/api/orders\n/api/clients\n/api/auth");
+
 app.Run();

@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using ForgingDwarf.Client.Services;
+using ForgingDwarf.Common.Models;
+using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using System.Text.Json;
 
 namespace ForgingDwarf.Client
 {
@@ -19,9 +12,66 @@ namespace ForgingDwarf.Client
     /// </summary>
     public partial class CreateOrderWindow : Window
     {
-        public CreateOrderWindow()
+        private readonly ApiService _apiService;
+
+        public CreateOrderWindow(ApiService apiService)
         {
             InitializeComponent();
+            _apiService = apiService;
+            Loaded += CreateOrderWindow_Loaded;
+        }
+
+        private async void CreateOrderWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Загрузка клиентов
+            var clients = await _apiService.GetClientsAsync();
+            ClientCombo.ItemsSource = clients;
+
+            // Заполнение enum'ов
+            ItemTypeCombo.ItemsSource = Enum.GetValues(typeof(ItemType));
+            SteelTypeCombo.ItemsSource = Enum.GetValues(typeof(SteelType));
+            StyleCombo.ItemsSource = Enum.GetValues(typeof(Common.Models.Style));
+            StatusCombo.ItemsSource = Enum.GetValues(typeof(OrderStatus));
+
+            // Установка значений по умолчанию
+            ItemTypeCombo.SelectedIndex = 0;
+            SteelTypeCombo.SelectedIndex = 0;
+            StyleCombo.SelectedIndex = 0;
+            StatusCombo.SelectedIndex = 0;
+        }
+
+        private async void CreateButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!decimal.TryParse(PriceTextBox.Text, out var price))
+            {
+                MessageBox.Show("Введите корректную цену");
+                return;
+            }
+
+            var order = new Order
+            {
+                //Client = (Common.Models.Client)ClientCombo.SelectedItem,
+                ClientId = ((Common.Models.Client)ClientCombo.SelectedItem).Id,
+                ItemType = (ItemType)ItemTypeCombo.SelectedItem,
+                SteelType = (SteelType)SteelTypeCombo.SelectedItem,
+                Style = (Common.Models.Style)StyleCombo.SelectedItem,
+                Status = (OrderStatus)StatusCombo.SelectedItem,
+                IsCustom = IsCustomCheck.IsChecked ?? false,
+                Price = (double)price,
+                OrderDate = DateTime.Now
+            };
+
+            var success = await _apiService.CreateOrderAsync(order);
+
+            if (success)
+            {
+                MessageBox.Show("Заказ успешно создан!");
+                Close();
+            }
+            else
+            {
+                MessageBox.Show("Ошибка при создании заказа");
+            }
         }
     }
 }
