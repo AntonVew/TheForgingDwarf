@@ -14,12 +14,12 @@ namespace ForgingDwarf.Server.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Конфигурация для Client
+            //Client
             modelBuilder.Entity<Client>(entity =>
             {
                 entity.HasKey(c => c.Id);
                 entity.Property(c => c.Id)
-                      .ValueGeneratedOnAdd(); // Автоинкремент
+                      .ValueGeneratedOnAdd();
 
                 entity.Property(c => c.Name)
                       .IsRequired()
@@ -33,12 +33,12 @@ namespace ForgingDwarf.Server.Data
                       .HasDefaultValue(false);
             });
 
-            // Конфигурация для Order
+            //Order
             modelBuilder.Entity<Order>(entity =>
             {
                 entity.HasKey(o => o.Id);
                 entity.Property(o => o.Id)
-                      .ValueGeneratedOnAdd(); // Явно указываем автоинкремент
+                      .ValueGeneratedOnAdd();
 
                 // Связь с Client
                 entity.HasOne(o => o.Client)
@@ -59,9 +59,8 @@ namespace ForgingDwarf.Server.Data
                 entity.Property(o => o.Style)
                       .HasConversion<string>();
 
-                // Настройка других свойств
                 entity.Property(o => o.Price)
-                      .HasColumnType("decimal(18,2)"); // Для точного хранения денежных значений
+                      .HasColumnType("decimal(18,2)");
             });
         }
     }

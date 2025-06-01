@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using ForgingDwarf.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using ForgingDwarf.Server.Repositories;
+using ForgingDwarf.Server.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,9 +35,10 @@ app.MapGet("/", () => Results.Json(new
     {
         Orders = "/api/orders",
         Clients = "/api/clients",
-        Auth = "/api/auth"
+        Login = "/api/auth/login",
+        Register = "/api/auth/register"
     }
 }));
-app.MapGet("/api", () => "API Endpoints:\n/api/orders\n/api/clients\n/api/auth");
+app.MapGet("/api", () => "API Endpoints:\n/api/orders\n/api/clients\n/api/auth/login\n/api/auth/register");
 
 app.Run();

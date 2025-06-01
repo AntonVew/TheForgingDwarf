@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using ForgingDwarf.Client.Services;
-using static AuthController;
+using ForgingDwarf.Server.Controllers;
 
 namespace ForgingDwarf.Client
 {
@@ -17,7 +17,7 @@ namespace ForgingDwarf.Client
         }
         private async void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
-            var request = new ClientRegistrationDto
+            var request = new AuthController.ClientRegistrationDto
             {
                 Name = NameBox.Text.Trim(),
                 Password = PasswordBox.Password,

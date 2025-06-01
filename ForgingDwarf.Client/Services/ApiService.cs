@@ -2,7 +2,7 @@
 using System.Net.Http;
 using System.Net.Http.Json;
 using ForgingDwarf.Common.Models;
-using static AuthController;
+using ForgingDwarf.Server.Controllers;
 
 namespace ForgingDwarf.Client.Services
 {
@@ -11,7 +11,7 @@ namespace ForgingDwarf.Client.Services
         private readonly HttpClient _httpClient = new() { BaseAddress = new Uri("http://localhost:5000") };
 
         // Аутентификация
-        public async Task<RegistrationResult> RegisterAsync(ClientRegistrationDto request)
+        public async Task<RegistrationResult> RegisterAsync(AuthController.ClientRegistrationDto request)
         {
             try
             {

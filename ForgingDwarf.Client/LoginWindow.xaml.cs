@@ -1,7 +1,9 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using Azure.Core;
 using ForgingDwarf.Client.Services;
 using ForgingDwarf.Common.Models;
+using ForgingDwarf.Common.Utils;
 
 namespace ForgingDwarf.Client
 {
@@ -19,7 +21,7 @@ namespace ForgingDwarf.Client
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            if (await _apiService.LoginAsync(NameBox.Text, PasswordBox.Password))
+            if (await _apiService.LoginAsync(NameBox.Text, PasswordHasher.Hash(PasswordBox.Password)))
             {
                 new MainWindow().Show(); // Основное окно приложения
                 this.Close();
