@@ -17,7 +17,7 @@ namespace ForgingDwarf.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Client>>> GetAllClients()
+        public async Task<ActionResult<List<Common.Models.Client>>> GetAllClients()
         {
             return await _db.Clients.ToListAsync();
         }

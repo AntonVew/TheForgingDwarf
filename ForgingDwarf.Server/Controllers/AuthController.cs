@@ -34,7 +34,7 @@ namespace ForgingDwarf.Server.Controllers
             if (existingClient != null)
                 return Conflict("Имя пользователя уже занято");
 
-            var client = new Client
+            var client = new Common.Models.Client
             {
                 Name = request.Name,
                 Password = PasswordHasher.Hash(request.Password),
