@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForgingDwarf.Server", "Forg
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForgingDwarf.Client", "ForgingDwarf.Client\ForgingDwarf.Client.csproj", "{CA54609C-40E6-4765-9405-E0B33B019757}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForgingDwarf.Test", "ForgingDwarf.Test\ForgingDwarf.Test.csproj", "{473BCA01-1B5F-466B-83C5-C1BCB788ADF2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{CA54609C-40E6-4765-9405-E0B33B019757}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA54609C-40E6-4765-9405-E0B33B019757}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA54609C-40E6-4765-9405-E0B33B019757}.Release|Any CPU.Build.0 = Release|Any CPU
+		{473BCA01-1B5F-466B-83C5-C1BCB788ADF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{473BCA01-1B5F-466B-83C5-C1BCB788ADF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{473BCA01-1B5F-466B-83C5-C1BCB788ADF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{473BCA01-1B5F-466B-83C5-C1BCB788ADF2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

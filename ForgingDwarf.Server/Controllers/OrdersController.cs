@@ -115,6 +115,12 @@ namespace ForgingDwarf.Server.Controllers
         {
             try
             {
+                // Проверка валидности статуса
+                if (!Enum.IsDefined(typeof(OrderStatus), dto.Status))
+                {
+                    return BadRequest("Недопустимый статус заказа");
+                }
+
                 var order = await _db.Orders.FindAsync(id);
                 if (order == null)
                     return NotFound();

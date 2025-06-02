@@ -79,7 +79,6 @@ namespace ForgingDwarf.Server.Controllers
         {
             Console.WriteLine($"Получен запрос: {JsonSerializer.Serialize(request)}");
 
-            // Упрощённая проверка без БД
             return Ok(new { request.Name, request.Password });
         }
 

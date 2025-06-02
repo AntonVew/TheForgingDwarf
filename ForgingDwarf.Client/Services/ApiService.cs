@@ -55,7 +55,7 @@ namespace ForgingDwarf.Client.Services
             return response.IsSuccessStatusCode;
         }
 
-        //для главного окна
+        //для главного окна (получение списка заказов)
         public async Task<List<OrderWithClient>> GetOrdersWithClientsAsync()
         {
             try
